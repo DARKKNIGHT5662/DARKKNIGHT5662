@@ -1,0 +1,96 @@
+// Interfacing Arduino with DHT11 humidity and temperature sensor
+
+// include LCD library code
+#include <LiquidCrystal.h>
+// include DHT library code
+#include "DHT.h"
+
+#define DHTTYPE DHT11       // DHT11 sensor is used
+
+#define DHTPIN 8            // DHT11 data pin is connected to Arduino pin 8 it will act as input
+
+DHT dht   // Initialize DHT library
+#define motor_pin 9
+#define led_pin 11
+
+// LCD module connections (RS, E, D4, D5, D6, D7)
+LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
+
+
+
+char temperature[] = "Temp = 00.0 C  ";
+
+void setup() 
+{
+  // set up the LCD's number of columns and rows
+  Serial.begin(9600);
+  pinMode(motor_pin, OUTPUT);
+  pinMode(led_pin, OUTPUT) ;
+  pinMode(DHTPIN , INPUT);
+  lcd.begin(16, 2);
+  dht.begin();
+}
+
+void loop() 
+{
+  delay(1000);           // wait 1s between readings
+  //Read temperature in degree Celsius
+  byte Temp = dht.readTemperature;
+  
+  // Check if any reads failed and exit early (to try again)
+  if (Temp>=36 && Temp=<38 ) 
+  {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Tempreature:");
+    lcd.print(Temp);
+    lcd.setCursor(0,0);
+    lcd.print("Welcome");
+
+    door();
+    return;
+  }
+
+  else if(Temp<36) 
+  {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Tempreature:");
+    lcd.print(Temp);
+    lcd.setCursor(0,0);
+    lcd.print("Try Again");
+    return;
+  }
+
+  else if(Temp<38) 
+  {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Tempreature:");
+    lcd.print(Temp);
+    lcd.setCursor(0,0);
+    lcd.print("High Tempreature");
+    return;
+  }
+  
+
+}
+
+
+void door()
+ {
+  digitalWrite(motor_pin, HIGH);
+  digitalWrite(led_pin, HIGH);
+
+  delay(50000); //wait second
+
+  digitalWrite(motor_pin, LOW);
+  digitalWrite(led_pin, LOW);
+ } 
+  
+  
+  
+  
+  
+  
+ 
